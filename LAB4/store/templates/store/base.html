@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}SmartShop{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #007bff;
+            --dark: #1a1a1a;
+            --light: #f8f9fa;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--light);
+            color: var(--dark);
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background: white;
+            border-bottom-width: 1px;
+            border-bottom-style: solid;
+            border-bottom-color: #ddd;
+            /* border-bottom: 1px solid #ddd; */
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav a {
+            margin-left: 1rem;
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 600;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 1rem;
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            border-radius: 4px;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .alert {
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            background-color: #d4edda;
+            color: #155724;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>SmartShop</h1>
+        <nav>
+            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'products' %}">Products</a>
+            
+            <!--<a href="{% url 'cart' %}">Cart ({{ total_quantity|default:0 }})</a>
+            This works only for the page rendered by the view.
+                If you go to another page, like home, and the view doesn’t pass total_quantity, the variable will not exist in base.html.
+                That’s why for all pages, people often use a context processor so total_quantity is always available, without needing to pass it from every view.-->
+
+            <a href="{% url 'cart' %}">Cart ({{ request.session.cart|length|default:0 }})</a>
+            <!-- This will work on any page, as long as the session exists, even if the view doesn’t pass anything. -->
+            
+            {% if user.is_authenticated %}
+            <span>Welcome, {{ user.username }}</span>
+            <a href="{% url 'logout' %}">Logout</a>
+            {% else %}
+            <a href="{% url 'register' %}">Register</a>
+            <a href="{% url 'login' %}">Login</a>
+            {% endif %}
+        </nav>
+    </header>
+
+    <div class="container">
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </div>
+</body>
+
+</html>
+
+
